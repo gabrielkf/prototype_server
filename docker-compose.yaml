@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  
+  database:
+    image: postgres
+    container_name: prototype_db
+    hostname: postgres
+    ports:
+      - '5432:5432'
+    networks:
+      - protonet
+    restart: always
+    tty: true
+    volumes:
+      - pg_data:/var/lib/posgresql/data
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=test
+  
+  server:
+    image: node:15
+    container_name: prototype_server
+    ports:
+      - '3000:3000'
+    networks:
+      - protonet
+    tty: true
+    depends_on:
+      - database
+    volumes:
+      - './src'
+
+networks:
+  protonet:
+    driver: bridge
+
+volumes:
+  pg_data:
